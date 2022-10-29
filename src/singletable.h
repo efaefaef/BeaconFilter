@@ -1,15 +1,17 @@
-#ifndef CUCKOO_FILTER_SINGLE_TABLE_H_
-#define CUCKOO_FILTER_SINGLE_TABLE_H_
+#ifndef BEACON_FILTER_SINGLE_TABLE_H_
+#define BEACON_FILTER_SINGLE_TABLE_H_
 
 #include <assert.h>
 
 #include <sstream>
+#include <bitset>
+#include <vector>
 
 #include "bitsutil.h"
 #include "debug.h"
 #include "printutil.h"
 
-namespace cuckoofilter {
+namespace beaconfilter {
 
 // the most naive table implementation: one huge bit array
 template <size_t bits_per_tag>
@@ -32,9 +34,16 @@ class SingleTable {
   size_t num_buckets_;
 
  public:
+
+  std::vector<std::bitset<kTagsPerBucket>> mat;
+
   explicit SingleTable(const size_t num) : num_buckets_(num) {
     buckets_ = new Bucket[num_buckets_ + kPaddingBuckets];
     memset(buckets_, 0, kBytesPerBucket * (num_buckets_ + kPaddingBuckets));
+    mat.resize(num_buckets_+kPaddingBuckets);
+    std::cout <<"bucket:" <<(num_buckets_ + kPaddingBuckets)<< std::endl;
+
+    
   }
 
   ~SingleTable() { 
@@ -72,6 +81,19 @@ class SingleTable {
     } else if (bits_per_tag == 4) {
       p += (j >> 1);
       tag = *((uint8_t *)p) >> ((j & 1) << 2);
+    } else if (bits_per_tag == 6) {
+      if (j % 4 == 0) {
+        p += (3 * j / 4);
+        tag = *((uint8_t *)p);
+      } else {
+        p += (j - ((j / 4) + 1));
+        if (j % 4 == 1)
+            tag = *((uint8_t*)p) >> 6;
+        else if (j % 4 == 2)
+            tag = *((uint8_t*)p) >> 4;
+        else if (j % 4 == 3)
+            tag = *((uint8_t*)p) >> 2;
+      }
     } else if (bits_per_tag == 8) {
       p += j;
       tag = *((uint8_t *)p);
@@ -103,13 +125,34 @@ class SingleTable {
         *((uint8_t *)p) &= 0x0f;
         *((uint8_t *)p) |= (tag << 4);
       }
+    } else if(bits_per_tag == 6){
+      if (j % 4 == 0) {
+        p += (3 * j / 4);
+        *((uint8_t *)p) &= 0xc0;
+        *((uint8_t *)p) |= tag;
+      } else {
+        p += (j - ((j / 4) + 1));
+        if (j % 4 == 1)
+        {
+            ((uint16_t *)p)[0] &= 0xf03f;
+            ((uint16_t *)p)[0] |= (tag << 6);
+        } else if (j % 4 == 2)
+        {
+            ((uint16_t *)p)[0] &= 0xf3cf;
+            ((uint16_t *)p)[0] |= (tag << 4);
+        } else if (j % 4 == 3)
+        {
+            *((uint8_t *)p) &= 0x03;
+            *((uint8_t *)p) |= (tag << 2);
+        }
+      }
     } else if (bits_per_tag == 8) {
       ((uint8_t *)p)[j] = tag;
     } else if (bits_per_tag == 12) {
       p += (j + (j >> 1));
       if ((j & 1) == 0) {
         ((uint16_t *)p)[0] &= 0xf000;
-        ((uint16_t *)p)[0] |= tag;
+        ((uint16_t *)p)[0] |= tag;            
       } else {
         ((uint16_t *)p)[0] &= 0x000f;
         ((uint16_t *)p)[0] |= (tag << 4);
@@ -123,7 +166,7 @@ class SingleTable {
 
   inline bool FindTagInBuckets(const size_t i1, const size_t i2,
                                const uint32_t tag) const {
-    const char *p1 = buckets_[i1].bits_;
+    /*const char *p1 = buckets_[i1].bits_;
     const char *p2 = buckets_[i2].bits_;
 
     uint64_t v1 = *((uint64_t *)p1);
@@ -145,7 +188,21 @@ class SingleTable {
         }
       }
       return false;
+    }*/
+    for(size_t j=0; j<kTagsPerBucket; ++j)
+    {
+      if(ReadTag(i1,j)==tag)
+      {
+        if(mat[i1][kTagsPerBucket-j-1] == 0x0)
+          return true;
+      }
+      if(ReadTag(i2,j)==tag)
+      {
+        if(mat[i2][kTagsPerBucket-j-1] == 0x1)
+          return true;
+      }
     }
+    return false;
   }
 
   inline bool FindTagInBucket(const size_t i, const uint32_t tag) const {
@@ -188,17 +245,22 @@ class SingleTable {
   }
 
   inline bool InsertTagToBucket(const size_t i, const uint32_t tag,
-                                const bool kickout, uint32_t &oldtag) {
+                                const uint32_t cur_flag,const bool kickout, 
+                                uint32_t &oldtag, uint32_t &oldflag,
+                                std::vector<std::bitset<kTagsPerBucket>>& mat) {
     for (size_t j = 0; j < kTagsPerBucket; j++) {
       if (ReadTag(i, j) == 0) {
         WriteTag(i, j, tag);
+        mat[i][kTagsPerBucket-j-1] = cur_flag;
         return true;
       }
     }
     if (kickout) {
       size_t r = rand() % kTagsPerBucket;
       oldtag = ReadTag(i, r);
+      oldflag = mat[i][kTagsPerBucket-r-1];
       WriteTag(i, r, tag);
+      mat[i][kTagsPerBucket-r-1] = cur_flag;
     }
     return false;
   }
@@ -213,5 +275,5 @@ class SingleTable {
     return num;
   }
 };
-}  // namespace cuckoofilter
-#endif  // CUCKOO_FILTER_SINGLE_TABLE_H_
+}  // namespace beaconfilter
+#endif  // BEACON_FILTER_SINGLE_TABLE_H_

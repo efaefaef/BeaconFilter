@@ -1,21 +1,21 @@
-#ifndef CUCKOO_FILTER_DEBUG_H_
-#define CUCKOO_FILTER_DEBUG_H_
+#ifndef BEACON_FILTER_DEBUG_H_
+#define BEACON_FILTER_DEBUG_H_
 
 #include <stdio.h>  // for perror
 
-namespace cuckoofilter {
+namespace beaconfilter {
 
 #ifndef DEBUG
 //#define DEBUG
 #endif
 
-#define debug_level (DEBUG_ERRS | DEBUG_CUCKOO)
+#define debug_level (DEBUG_ERRS | DEBUG_BEACON)
 
 #ifdef DEBUG
 // extern unsigned int debug;
 
 /*
- * a combination of DEBUG_ERRS, DEBUG_CUCKOO, DEBUG_TABLE, DEBUG_ENCODE
+ * a combination of DEBUG_ERRS, DEBUG_BEACON, DEBUG_TABLE, DEBUG_ENCODE
  */
 
 #define DPRINTF(level, ...)                                    \
@@ -41,7 +41,7 @@ namespace cuckoofilter {
  */
 #define DEBUG_NONE 0x00    // DBTEXT:  No debugging
 #define DEBUG_ERRS 0x01    // DBTEXT:  Verbose error reporting
-#define DEBUG_CUCKOO 0x02  // DBTEXT:  Messages for cuckoo hashing
+#define DEBUG_BEACON 0x02  // DBTEXT:  Messages for BEACON hashing
 #define DEBUG_TABLE 0x04   // DBTEXT:  Messages for table operations
 #define DEBUG_ENCODE 0x08  // DBTEXT:  Messages for encoding
 
@@ -49,6 +49,6 @@ namespace cuckoofilter {
 
 // int set_debug(char *arg);  /* Returns 0 on success, -1 on failure */
 
-}  // namespace cuckoofilter
+}  // namespace beaconfilter
 
-#endif  // CUCKOO_FILTER_DEBUG_H_
+#endif  // BEACON_FILTER_DEBUG_H_

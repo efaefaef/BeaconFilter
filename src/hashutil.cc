@@ -27,7 +27,7 @@
 
 #define get16bits(d) (*((const uint16_t *)(d)))
 
-namespace cuckoofilter {
+namespace beaconfilter {
 /*
   hashlittle() -- hash a variable-length key into a 32-bit value
   k       : the key (the unaligned variable-length array of bytes)
@@ -763,4 +763,4 @@ std::string HashUtil::SHA1Hash(const char *inbuf, size_t in_length) {
 
   return std::string((char *)md_value, (size_t)md_len);
 }
-}  // namespace cuckoofilter
+}  // namespace beaconfilter

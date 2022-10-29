@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace cuckoofilter {
+namespace beaconfilter {
 
 std::string PrintUtil::bytes_to_hex(const char *data, size_t len) {
   std::string hexstr = "";
@@ -23,4 +23,4 @@ std::string PrintUtil::bytes_to_hex(const std::string &s) {
   return bytes_to_hex((const char *)s.data(), s.size());
 };
 
-}  // namespace cuckoofilter
+}  // namespace beaconfilter

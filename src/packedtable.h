@@ -1,5 +1,5 @@
-#ifndef CUCKOO_FILTER_PACKED_TABLE_H_
-#define CUCKOO_FILTER_PACKED_TABLE_H_
+#ifndef BEACON_FILTER_PACKED_TABLE_H_
+#define BEACON_FILTER_PACKED_TABLE_H_
 
 #include <sstream>
 #include <utility>
@@ -8,7 +8,7 @@
 #include "permencoding.h"
 #include "printutil.h"
 
-namespace cuckoofilter {
+namespace beaconfilter {
 
 // Using Permutation encoding to save 1 bit per tag
 template <size_t bits_per_tag>
@@ -437,6 +437,6 @@ class PackedTable {
   // } // NumTagsInBucket
 
 };  // PackedTable
-}  // namespace cuckoofilter
+}  // namespace beaconfilter
 
-#endif  // CUCKOO_FILTER_PACKED_TABLE_H_
+#endif  // BEACON_FILTER_PACKED_TABLE_H_

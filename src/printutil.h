@@ -1,9 +1,9 @@
-#ifndef CUCKOO_FILTER_PRINTUTIL_H_
-#define CUCKOO_FILTER_PRINTUTIL_H_
+#ifndef BEACON_FILTER_PRINTUTIL_H_
+#define BEACON_FILTER_PRINTUTIL_H_
 
 #include <string>
 
-namespace cuckoofilter {
+namespace beaconfilter {
 class PrintUtil {
  public:
   static std::string bytes_to_hex(const char *data, size_t len) {
@@ -27,6 +27,6 @@ class PrintUtil {
   PrintUtil();
 };  // class PrintUtil
 
-}  // namespace cuckoofilter
+}  // namespace beaconfilter
 
-#endif  // CUCKOO_FILTER_PRINTUTIL_H_
+#endif  // BEACON_FILTER_PRINTUTIL_H_

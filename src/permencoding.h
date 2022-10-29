@@ -1,5 +1,5 @@
-#ifndef CUCKOO_FILTER_PERM_ENCODING_H_
-#define CUCKOO_FILTER_PERM_ENCODING_H_
+#ifndef BEACON_FILTER_PERM_ENCODING_H_
+#define BEACON_FILTER_PERM_ENCODING_H_
 
 #include <stdint.h>
 #include <stdio.h>
@@ -10,7 +10,7 @@
 
 #include "debug.h"
 
-namespace cuckoofilter {
+namespace beaconfilter {
 
 class PermEncoding {
   /* unpack one 2-byte number to four 4-bit numbers */
@@ -84,5 +84,5 @@ class PermEncoding {
     }
   }
 };
-}  // namespace cuckoofilter
-#endif  // CUCKOO_FILTER_PERM_ENCODING_H_
+}  // namespace beaconfilter
+#endif  // BEACON_FILTER_PERM_ENCODING_H_

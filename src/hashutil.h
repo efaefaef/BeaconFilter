@@ -1,5 +1,5 @@
-#ifndef CUCKOO_FILTER_HASHUTIL_H_
-#define CUCKOO_FILTER_HASHUTIL_H_
+#ifndef BEACON_FILTER_HASHUTIL_H_
+#define BEACON_FILTER_HASHUTIL_H_
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -10,7 +10,7 @@
 #include <openssl/evp.h>
 #include <random>
 
-namespace cuckoofilter {
+namespace beaconfilter {
 
 class HashUtil {
  public:
@@ -19,7 +19,7 @@ class HashUtil {
   static uint32_t BobHash(const std::string &s, uint32_t seed = 0);
 
   // Bob Jenkins Hash that returns two indices in one call
-  // Useful for Cuckoo hashing, power of two choices, etc.
+  // Useful for BEACON hashing, power of two choices, etc.
   // Use idx1 before idx2, when possible. idx1 and idx2 should be initialized to seeds.
   static void BobHash(const void *buf, size_t length, uint32_t *idx1,
                       uint32_t *idx2);
@@ -90,4 +90,4 @@ class SimpleTabulation {
 };
 }
 
-#endif  // CUCKOO_FILTER_HASHUTIL_H_
+#endif  // BEACON_FILTER_HASHUTIL_H_
